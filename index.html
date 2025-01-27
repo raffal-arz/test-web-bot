@@ -3,27 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Bot</title>
+    <title>Kendalikan VS Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Kirim Pesan ke Bot WhatsApp</h1>
-    <input type="text" id="message" placeholder="Masukkan pesan">
-    <button onclick="sendMessage()">Kirim</button>
+    <h1>Kendalikan VS Code Anda</h1>
+    <p>Masukkan perintah untuk dijalankan di VS Code:</p>
+    <input type="text" id="command" placeholder="Masukkan perintah...">
+    <button onclick="sendCommand()">Kirim Perintah</button>
+
+    <h3>Respons:</h3>
+    <pre id="response">Belum ada perintah yang dikirim.</pre>
 
     <script>
-        function sendMessage() {
-            const message = document.getElementById('message').value;
+        function sendCommand() {
+            const command = document.getElementById('command').value;
 
-            fetch('https://randomsubdomain.loca.lt/send-message', {
+            if (!command) {
+                alert("Mohon masukkan perintah.");
+                return;
+            }
+
+            // URL backend diganti menjadi URL Localtunnel Anda
+            fetch('https://purple-moles-beam.loca.lt/run-command', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ message }),
+                body: JSON.stringify({ command }),
             })
             .then(response => response.json())
-            .then(data => alert(data.status))
-            .catch(error => console.error('Error:', error));
+            .then(data => {
+                document.getElementById('response').textContent = data.output || "Perintah berhasil dikirim.";
+            })
+            .catch(error => {
+                document.getElementById('response').textContent = "Error: " + error.message;
+            });
         }
     </script>
 </body>
